@@ -1,0 +1,84 @@
+# AAE4011 Assignment 1 – ROS-Based Vehicle Detection from Rosbag
+
+This repository implements a real-time vehicle detection pipeline for Unmanned Aerial Systems (UAS) using ROS and YOLOv8. The system processes image streams from a provided `.bag` file, detects vehicles (cars, buses, etc.), and visualizes bounding boxes with confidence scores.
+
+![Demo](demo_screenshot.png) <!-- Optional: add a screenshot -->
+
+---
+
+## 🎥 Demonstration Video
+
+[Watch the demo on YouTube (unlisted)](https://youtu.be/YOUR_VIDEO_ID_HERE)
+
+*(Replace `YOUR_VIDEO_ID_HERE` with your actual YouTube video ID after uploading)*
+
+---
+
+## 🛠️ How to Run
+
+### Prerequisites
+- Ubuntu 20.04 + ROS Noetic
+- Python 3.8+
+- Required packages:
+  ```bash
+  sudo apt install ros-noetic-rosbag ros-noetic-image-view python3-rosbag
+  pip3 install ultralytics opencv-python
+Steps
+Clone & Build
+bash
+
+编辑
+
+
+
+cd ~/catkin_ws/src
+git clone https://github.com/YOUR_GITHUB_USERNAME/vehicle_detection.git
+cd ~/catkin_ws
+catkin build
+source devel/setup.bash
+Place your .bag file
+Put the assignment .bag file (e.g., 2026-02-02-17-57-27.bag) in your home directory or specify its full path.
+Run the detector
+bash
+
+编辑
+
+
+
+roslaunch vehicle_detection detector.launch bag_file:=/full/path/to/your/file.bag
+Example:
+bash
+
+编辑
+
+
+
+roslaunch vehicle_detection detector.launch bag_file:=/mnt/c/Users/15363/Desktop/2026-02-02-17-57-27.bag
+View results
+A window will pop up showing real-time detection with bounding boxes and labels.
+🧠 Method Description
+Detection Model: YOLOv8n (YOLOv8 nano) from the ultralytics library.
+Chosen for its balance of speed and accuracy—critical for onboard drone applications.
+Pre-trained on COCO dataset (includes "car", "bus", "truck" classes).
+ROS Integration:
+Subscribes to /camera/image_raw topic from rosbag.
+Publishes annotated images to /vehicle_detection/output.
+Uses cv_bridge to convert between ROS Image messages and OpenCV format.
+Visualization: Real-time display via OpenCV (cv2.imshow).
+Why not other models? Faster R-CNN is too slow; SSD lacks accuracy for small distant vehicles in aerial views. YOLOv8 offers optimal trade-off.
+🔍 Reflection & Critical Analysis
+(a) What did you learn?
+ROS Message Pipeline: I learned how to subscribe to image topics, process data in real time, and publish results—all while managing callbacks and threading in rospy.
+Integration of Deep Learning with ROS: I gained hands-on experience embedding a PyTorch-based model (YOLOv8) into a ROS node, handling GPU/CPU inference, and managing frame rates.
+(b) How did you use AI tools?
+I used AI assistants (like Qwen) to:
+Debug WSL/ROS path issues (e.g., /mnt/c/... vs Linux paths).
+Generate boilerplate code for extract_images.py and launch files.
+Benefits: Accelerated troubleshooting and reduced syntax errors.
+Limitations: AI cannot access my local file system, so I had to manually verify paths and topic names. Final logic and integration were done by me.
+(c) How to improve accuracy?
+Fine-tune YOLOv8 on aerial vehicle datasets (e.g., VisDrone). The default COCO model struggles with top-down vehicle views.
+Add temporal smoothing (e.g., Kalman filter) to reduce flickering and stabilize bounding boxes across frames.
+(d) Real-world challenges on a drone
+Latency & Frame Rate: Onboard GPUs may not sustain real-time inference at high resolution, causing missed detections during fast flight.
+Lighting & Weather: Shadows, glare, or rain can degrade image quality, leading to false negatives—something not captured in the provided rosbag.

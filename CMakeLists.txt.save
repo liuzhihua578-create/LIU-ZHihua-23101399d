@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.0.2)
+project(vehicle_detection)
+
+find_package(catkin REQUIRED COMPONENTS
+)
+  rospy
+  sensor_msgs
+  cv_bridge
+  std_msgs
+)
+
+catkin_package()
+
+install(DIRECTORY scripts/
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
+                GROUP_EXECUTE GROUP_READ
+                WORLD_EXECUTE WORLD_READ
+)

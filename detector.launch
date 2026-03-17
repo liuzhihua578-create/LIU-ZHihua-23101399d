@@ -1,0 +1,13 @@
+<launch>
+  <!-- 参数：rosbag 文件路径（请修改为你自己的路径！） -->
+  <arg name="bag_file" default="/home/liu23101399/Downloads/assignment.bag"/>
+
+  <!-- 播放 rosbag（带 --clock 用于模拟时间） -->
+  <node pkg="rosbag" type="play" name="player" args="--clock $(arg bag_file)" />
+
+  <!-- 启动车辆检测节点 -->
+  <node pkg="vehicle_detection" type="vehicle_detector_node.py" name="vehicle_detector" output="screen" />
+
+  <!-- 显示检测结果图像 -->
+  <node pkg="image_view" type="image_view" name="detection_viewer" args="image:=/vehicle_detection/image" />
+</launch>
